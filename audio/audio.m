@@ -1,0 +1,55 @@
+%% sinal original (info)
+
+f = 1e3;
+A = 1;
+w = 2*pi*f;
+fs = 44e3;
+t = -fs/2:1/fs:fs/2;
+
+sinal = audioread('som_mod_AM.wav');
+w = sinal(:,1);
+
+%w = A*cos(w.*t);
+
+subplot(221);
+plot(w);
+xlim([0 0.002]);
+ylabel('Sinal original (info)')
+xlabel('Tempo')
+
+%% Portadora
+
+fp = 8e3;
+Ap = 1;
+wp = 2*pi*fp;
+
+c = Ap*cos(wp.*t);
+
+subplot(222)
+plot(t,c)
+xlim([0.001 0.002])
+ylabel('Sinal da portadora')
+xlabel('Tempo')
+
+%% Sinal multiplicado pela portadora
+
+s = w.*c;
+
+subplot(223)
+plot(t,s)
+xlim([0.001 0.002])
+ylabel('Sinal modulado')
+xlabel('Tempo')
+
+%% Sinal modulado multiplicado pela portadora novamente, e entao passado um filtro passa baixa
+
+s1 = s.*c;
+s1f= fir1(50, (2*4e3)/fs);
+x = filter(s1f,1,s1);
+subplot(224)
+plot(t,x)
+xlim([0 0.002])
+ylabel('Sinal recuperado')
+xlabel('Tempo')
+
+
